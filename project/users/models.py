@@ -13,3 +13,6 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name_plural = "User Profiles"
         ordering = ["id"]
+
+    def __str__(self):
+        return self.user.username

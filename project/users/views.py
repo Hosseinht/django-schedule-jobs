@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 from .decorators import login_forbidden
 from .forms import AuthForm, UserForm
+from .task import create_email
 
 
 class SignUpView(generic.FormView):
@@ -17,6 +18,15 @@ class SignUpView(generic.FormView):
     def form_valid(self, form):
         obj = form.save()
         login(self.request, obj)
+        # this is a celery task
+        create_email.delay(
+            user_id=obj.id,  # user ID - this must be added
+            email_account="do not reply",  # the email account being used
+            subject='Thanks for signing up',
+            email=obj.username,  # who to email
+            cc=[],
+            template="hello.html",  # template to be used
+        )
         return super().form_valid(form)
 
     @method_decorator(login_forbidden)
@@ -34,7 +44,7 @@ class SignInView(generic.FormView):
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
 
-        if user is not None and user.is_active():
+        if user is not None and user.is_active:
             login(self.request, user)
             return super(SignInView, self).form_valid(form)
         else:

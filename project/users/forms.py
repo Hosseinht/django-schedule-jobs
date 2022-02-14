@@ -10,9 +10,9 @@ class UserForm(UserCreationForm):
     '''
     Form that uses built-in UserCreationForm to handle user creation
     '''
-    username = forms.EmailField(max_length=254, required=True,
-                                widget=forms.TextInput(attrs={
-                                    'placeholder': '*Email..'}))
+    username = forms.CharField(max_length=254, required=True,
+                               widget=forms.TextInput(attrs={
+                                   'placeholder': '*Username..'}))
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'placeholder': '*Password..', }))
@@ -29,12 +29,11 @@ class AuthForm(AuthenticationForm):
     '''
     Form that uses built-in AuthenticationForm to handle user auth
     '''
-    username = forms.EmailField(max_length=254, required=True,
-                                widget=forms.TextInput(attrs={'placeholder': '*Email..', }))
+    username = forms.CharField(max_length=254, required=True,
+                               widget=forms.TextInput(attrs={'placeholder': '*Username..', }))
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': '*Password..', }))
 
     class Meta:
         model = User
         fields = ('username', 'password',)
-
